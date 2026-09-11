@@ -1,0 +1,251 @@
+@import "tailwindcss";
+@import "mapbox-gl/dist/mapbox-gl.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ─── Color Tokens ───────────────────────────────────────────── */
+:root {
+  --color-base:         #0a0d13;
+  --color-surface:      #0f1420;
+  --color-card:         #111827;
+  --color-card-raised:  #141926;
+  --color-border:       #1e2433;
+  --color-border-hover: #263040;
+
+  --color-green:        #10b981;
+  --color-green-dim:    rgba(16, 185, 129, 0.10);
+  --color-green-glow:   rgba(16, 185, 129, 0.06);
+  --color-green-ring:   rgba(16, 185, 129, 0.25);
+
+  --color-blue:   #3b82f6;
+  --color-amber:  #f59e0b;
+  --color-red:    #ef4444;
+
+  --color-text-primary:   #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted:     #475569;
+}
+
+/* ─── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { color-scheme: dark; }
+
+body {
+  background: var(--color-base);
+  color: var(--color-text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root { min-height: 100vh; }
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--color-border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-border-hover); }
+
+/* ─── Typography Helpers ─────────────────────────────────────── */
+.font-display { font-family: 'Space Grotesk', sans-serif; }
+.font-mono    { font-family: 'JetBrains Mono', monospace; }
+
+/* ─── Component: Card ────────────────────────────────────────── */
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+.card-raised {
+  background: var(--color-card-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+.card-hover {
+  transition: border-color 0.15s, background 0.15s;
+  cursor: pointer;
+}
+.card-hover:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-card-raised);
+}
+
+/* ─── Component: Buttons ─────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px; height: 36px; padding: 0 16px;
+  border-radius: 8px; border: none;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--color-green);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) { background: #059669; }
+
+.btn-ghost {
+  background: var(--color-card-raised);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+  color: var(--color-text-primary);
+  background: #1c2332;
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--color-red);
+}
+.btn-danger:hover:not(:disabled) { background: rgba(239, 68, 68, 0.18); }
+
+/* ─── Component: Input ───────────────────────────────────────── */
+.input {
+  height: 42px;
+  background: var(--color-card-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  padding: 0 12px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input::placeholder {
+  color: var(--color-text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.input:focus { border-color: var(--color-green); }
+.input.with-icon-left  { padding-left: 40px; }
+.input.with-icon-right { padding-right: 40px; }
+
+select.input { appearance: none; cursor: pointer; }
+textarea.input { height: auto; padding: 10px 12px; resize: vertical; }
+
+/* ─── Component: Badge ───────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 4px 10px; border-radius: 99px;
+  font-size: 12px; font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+.badge-green  { background: rgba(16,185,129,0.10); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.badge-amber  { background: rgba(245,158,11,0.10);  color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.badge-red    { background: rgba(239,68,68,0.10);   color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.badge-blue   { background: rgba(59,130,246,0.10);  color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
+
+/* ─── Component: Sidebar Nav Item ───────────────────────────── */
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 10px; height: 38px; border-radius: 8px;
+  text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none; border-left: 2px solid transparent;
+  cursor: pointer; width: 100%; text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+.nav-item:hover {
+  background: var(--color-card-raised);
+  color: var(--color-text-primary);
+}
+.nav-item.active {
+  border-left-color: var(--color-green);
+  background: var(--color-green-dim);
+  color: var(--color-text-primary);
+}
+.nav-item.active svg { color: var(--color-green); }
+
+/* ─── Component: Progress Bar ────────────────────────────────── */
+.progress-track {
+  height: 6px; border-radius: 99px;
+  background: var(--color-border); overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ─── Component: Toggle ──────────────────────────────────────── */
+.toggle {
+  position: relative; width: 40px; height: 22px;
+  border-radius: 99px; border: none; cursor: pointer;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.toggle.on  { background: var(--color-green); }
+.toggle.off { background: var(--color-border); }
+.toggle-knob {
+  position: absolute; top: 3px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; transition: left 0.15s;
+}
+.toggle.on  .toggle-knob { left: 21px; }
+.toggle.off .toggle-knob { left:  3px; }
+
+/* ─── Component: Table ───────────────────────────────────────── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  font-size: 11px; font-weight: 500; color: var(--color-text-muted);
+  padding: 0 12px 10px; text-align: left; border-bottom: 1px solid var(--color-border);
+}
+.data-table td {
+  font-size: 13px; color: var(--color-text-primary);
+  padding: 0 12px; height: 36px; border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+.data-table tr:hover td { background: var(--color-card-raised); }
+.data-table tr.selected td { border-left: 2px solid var(--color-green); }
+
+/* ─── Tooltip ────────────────────────────────────────────────── */
+.tooltip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px; padding: 8px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  font-size: 12px;
+}
+
+/* ─── Mapbox overrides ───────────────────────────────────────── */
+.mapboxgl-ctrl-group {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+}
+.mapboxgl-ctrl-group button {
+  background: transparent !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+.mapboxgl-ctrl-group button:last-child { border-bottom: none !important; }
+.mapboxgl-ctrl-group button:hover { background: var(--color-card-raised) !important; }
+.mapboxgl-ctrl-icon { filter: invert(0.6); }
+.mapboxgl-ctrl-attrib { display: none; }
+
+/* ─── Spinner ────────────────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-green);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ─── Fade in ────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.25s ease forwards; }
