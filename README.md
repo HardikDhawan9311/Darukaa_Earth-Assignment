@@ -10,6 +10,17 @@ A full-stack geospatial data analytics platform engineered to map, monitor, and 
 
 ---
 
+## 🔑 Demo Login Credentials
+
+Use these pre-configured credentials to test system roles and access controls:
+
+| System Role | Email | Password | Permissions |
+| :--- | :--- | :--- | :--- |
+| **Administrator** | `admin@gmail.com` | `admin12345` | Full Control: Create/Delete Projects, Edit Statuses, Manage Sites |
+| **Environmental Analyst** | `analyst@gmail.com` | `analyst12345` | Read-Only: Interactive Map Telemetry, Site Analytics Stream |
+
+---
+
 ## 🏛️ High-Level System Architecture
 
 Darukaa Earth is built on a modern decoupled architecture separating the interactive geospatial client, the high-concurrency API server, and the spatial PostgreSQL database.
