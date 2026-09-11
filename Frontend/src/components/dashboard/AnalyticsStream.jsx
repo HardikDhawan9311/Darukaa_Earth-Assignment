@@ -17,16 +17,25 @@ const MiniCard = ({ label, value, color }) => (
 const AnalyticsStream = ({
   lineData, barData, chartConfig,
   selectedProject, avgCarbon = 0, avgBio = 0, siteCount = 0,
-}) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
+}) => {
+  const projectStatus = selectedProject?.status || 'Active';
+  const statusColor =
+    projectStatus === 'In Progress'
+      ? 'var(--color-amber)'
+      : projectStatus === 'Ended'
+      ? 'var(--color-red)'
+      : 'var(--color-green)';
 
-    {/* 2×2 metric grid */}
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-      <MiniCard label="Avg carbon" value={`${avgCarbon}%`} color="var(--color-green)" />
-      <MiniCard label="Total sites" value={siteCount}       color="var(--color-blue)"  />
-      <MiniCard label="Biodiversity" value={`${avgBio}%`}   color="var(--color-amber)" />
-      <MiniCard label="Status" value="Active"                color="var(--color-green)" />
-    </div>
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
+
+      {/* 2×2 metric grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <MiniCard label="Avg carbon" value={`${avgCarbon}%`} color="var(--color-green)" />
+        <MiniCard label="Total sites" value={siteCount}       color="var(--color-blue)"  />
+        <MiniCard label="Biodiversity" value={`${avgBio}%`}   color="var(--color-amber)" />
+        <MiniCard label="Status" value={projectStatus}        color={statusColor} />
+      </div>
 
     {/* Charts card */}
     <div className="card" style={{ padding: 16, flex: 1, display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -73,7 +82,7 @@ const AnalyticsStream = ({
       </div>
       <Trees size={14} color="var(--color-green)" strokeWidth={1.5} />
     </div>
-  </div>
-);
+  );
+};
 
 export default AnalyticsStream;
