@@ -199,5 +199,4 @@ cd Darukaa_Earth-Assignment
 ## 🌐 Live Deployment Links
 
 * **Live Frontend**: [https://darukaa-earth-assignment.vercel.app](https://darukaa-earth-assignment.vercel.app)
-* **Live API Backend**: [https://darukaa-earth-assignment.onrender.com](https://darukaa-earth-assignment.onrender.com)
 * **API Documentation**: [https://darukaa-earth-assignment.onrender.com/docs](https://darukaa-earth-assignment.onrender.com/docs)
