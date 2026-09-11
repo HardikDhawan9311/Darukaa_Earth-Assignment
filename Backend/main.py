@@ -6,7 +6,7 @@ from routes import auth_router, project_router
 
 app = FastAPI(title="Darukaa Earth API")
 
-# Configure CORS
+# Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Automatically create tables and apply missing columns on startup (For Dev only)
+# Startup database initialization
 @app.on_event("startup")
 async def startup():
     async with engine.begin() as conn:

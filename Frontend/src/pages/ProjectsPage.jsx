@@ -30,7 +30,7 @@ const StatusBadge = ({ status }) => {
   return <span className={`badge ${cls}`} style={{ fontSize: 10, padding: '2px 8px' }}>{status}</span>;
 };
 
-/* ─── Modal input label helper ─────────────────────────────── */
+// Modal form field wrapper
 const ModalField = ({ label, children }) => (
   <div>
     <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: 6 }}>

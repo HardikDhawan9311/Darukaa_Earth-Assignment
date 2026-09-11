@@ -16,7 +16,7 @@ function parseProject(project) {
   };
 }
 
-/* ─── Floating panel wrapper — solid, no blur ─────────────── */
+// Panel card container
 const FloatingCard = ({ children, style }) => (
   <div style={{
     background: 'var(--color-surface)',
@@ -138,7 +138,7 @@ const MapViewer = () => {
         />
       </div>
 
-      {/* ── TOP TOOLBAR ── */}
+      {/* Top toolbar */}
       <div style={{ position: 'absolute', top: 12, left: 12, right: 12, zIndex: 20, display: 'flex', gap: 10, alignItems: 'flex-start', pointerEvents: 'none' }}>
         {/* Project selector */}
         <FloatingCard style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, pointerEvents: 'all' }}>
