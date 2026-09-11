@@ -1,98 +1,192 @@
-# 🌍 Darukaa.Earth
+# 🌍 Darukaa Earth | Geospatial Ecosystem & Carbon Analytics Platform
 
-A full-stack geospatial data analytics platform to manage, visualize, and analyze carbon and biodiversity projects.
-
----
-
-## 🚀 Features
-
-- 📊 Interactive dashboard for managing projects
-- 🗺️ Map-based visualization of geographical sites
-- 📈 Analytics for carbon score & biodiversity index
-- 🔐 Authentication system
-- ⚡ High-performance backend using FastAPI
-- 🗄️ PostgreSQL database integration
+A full-stack geospatial data analytics platform engineered to map, monitor, and analyze carbon sequestration projects and biodiversity metrics across geographical sites using interactive 3D maps and telemetry stream visualizers.
 
 ---
 
-## 🛠️ Tech Stack
+## 📸 Application Showcase
 
-### Frontend
-- React (Vite)
-- Tailwind CSS
-
-### Backend
-- FastAPI (Python)
-
-### Database
-- PostgreSQL
-
-### Deployment
-- Vercel (Frontend)
-- Render (Backend & DB)
+![Darukaa Earth Dashboard](./Frontend/src/assets/hero.png)
 
 ---
 
+## 🏛️ High-Level System Architecture
 
-## ⚙️ Installation & Setup
+Darukaa Earth is built on a modern decoupled architecture separating the interactive geospatial client, the high-concurrency API server, and the spatial PostgreSQL database.
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/Darukaa_Earth.git
-cd Darukaa_Earth
-
+```text
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                                 CLIENT LAYER                                    │
+│  React 18 + Vite  │  Mapbox GL JS (3D GIS)  │  Chart.js Telemetry Stream         │
+└────────────────────────────────────────┬────────────────────────────────────────┘
+                                         │  HTTPS / REST API JSON
+┌────────────────────────────────────────▼────────────────────────────────────────┐
+│                                 BACKEND API                                     │
+│  FastAPI (Async Python)  │  SQLAlchemy Async ORM  │  GeoAlchemy2 (Spatial Engine)   │
+└────────────────────────────────────────┬────────────────────────────────────────┘
+                                         │  PostgreSQL Protocol
+┌────────────────────────────────────────▼────────────────────────────────────────┐
+│                              SPATIAL DATABASE                                   │
+│   PostgreSQL + PostGIS Extension (SRID 4326 WGS84 Spatial Polygon Geometries)   │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2. Backend Setup
-```bash
-cd Backend
+### Component Overview
+* **Frontend SPA**: React 18 with Vite for lightning-fast performance, Mapbox GL JS v3 for rendering high-precision GIS polygon bounding boxes, and custom telemetry charts.
+* **Backend API**: FastAPI asynchronous server managing user authentication (Bcrypt hashing), spatial polygon calculations (Shapely), and RESTful endpoints.
+* **Geospatial Database**: PostgreSQL equipped with the PostGIS spatial engine, storing polygon geometries (`POLYGON SRID=4326`) and telemetry analytics.
+
+---
+
+## 🗄️ Database Schema Breakdown
+
+The database consists of 4 primary relational entities:
+
+```text
+[users] ───< (Auth & RBAC Roles)
+[projects] ───1:N───> [sites] (PostGIS Polygons) ───1:N───> [analytics] (Telemetry)
 ```
 
-1.  **Create a virtual environment:**
-    ```bash
-    python -m venv venv
-    ```
+### 1. `users` Table
+Stores user accounts and system roles for Role-Based Access Control (RBAC).
 
-2.  **Activate the virtual environment:**
-    -   **Windows:**
-        ```bash
-        venv\Scripts\activate
-        ```
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | Primary Key, Indexed | Auto-incrementing user ID |
+| `full_name` | `VARCHAR` | NOT NULL | User's full name |
+| `email` | `VARCHAR` | Unique, Indexed, NOT NULL | User login email |
+| `password` | `VARCHAR` | NOT NULL | Bcrypt hashed password |
+| `role` | `VARCHAR` | Default: `'user'` | Role (`'admin'`, `'analyst'`, `'user'`) |
+| `created_at` | `TIMESTAMP` | Default: `NOW()` | Registration timestamp |
 
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+### 2. `projects` Table
+Represents conservation and restoration initiatives.
 
-## Running the Server
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | Primary Key, Indexed | Auto-incrementing project ID |
+| `name` | `VARCHAR(255)` | NOT NULL | Project name |
+| `description` | `TEXT` | Nullable | Project description / JSON metadata |
+| `status` | `VARCHAR(50)` | Default: `'Active'` | Project status (`'Active'`, `'In Progress'`, `'Ended'`) |
+| `created_at` | `TIMESTAMP` | Default: `NOW()` | Creation timestamp |
 
-Start the development server with:
+### 3. `sites` Table
+Stores spatial GIS boundaries (polygons) assigned to projects.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | Primary Key, Indexed | Auto-incrementing site ID |
+| `project_id` | `INTEGER` | Foreign Key (`projects.id` ON DELETE CASCADE) | Parent project link |
+| `name` | `VARCHAR(255)` | NOT NULL | Site area name |
+| `geometry` | `GEOMETRY` | PostGIS Polygon (SRID 4326) | Spatial polygon geometry |
+| `created_at` | `TIMESTAMP` | Default: `NOW()` | Mapping timestamp |
+
+### 4. `analytics` Table
+Stores carbon score and biodiversity telemetry records for mapped sites.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | Primary Key, Indexed | Auto-incrementing telemetry ID |
+| `site_id` | `INTEGER` | Foreign Key (`sites.id` ON DELETE CASCADE) | Mapped site link |
+| `carbon_score` | `FLOAT` | Check: `0.0 <= carbon_score <= 1.0` | Normalized carbon index |
+| `biodiversity_index` | `FLOAT` | Check: `0.0 <= biodiversity_index <= 1.0` | Normalized biodiversity score |
+| `recorded_at` | `TIMESTAMP` | Default: `NOW()` | Recording timestamp |
+
+---
+
+## 🔐 Role-Based Access Control (RBAC)
+
+* **Administrator (`role: "admin"`)**: Full management rights to create projects, delete projects, and switch project operational status (`Active`, `In Progress`, `Ended`).
+* **Environmental Analyst (`role: "analyst"` / `"user"`)**: Read-only visualization access for exploring project sites, telemetry streams, and interactive maps without deletion rights.
+
+---
+
+## 💻 Environment Setup & Local Installation
+
+### Prerequisites
+* **Python 3.10+** installed
+* **Node.js 18+** & **npm** installed
+* **PostgreSQL** database (Local or Cloud-hosted with PostGIS extension enabled)
+
+---
+
+### 1. Clone Repository
+
 ```bash
-uvicorn main:app --reload
+git clone https://github.com/HardikDhawan9311/Darukaa_Earth-Assignment.git
+cd Darukaa_Earth-Assignment
 ```
 
-### 2.1 Setup of Backend Env 
-  Create a file as .env in Backend Directory
-  .env file 
-  ```
-  DATABASE_URL=postgresql+asyncpg://postgres:[user]%409311@localhost:[port]/darukaa_earth
+---
 
-  ```
+### 2. Backend Environment Setup
 
+1. **Navigate to Backend directory & create virtual environment**:
+   ```bash
+   cd Backend
+   python -m venv venv
+   ```
 
-### 3. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-### 3.1 Setup of Backend Env 
-  Create a file as .env in Frontend Directory
-  .env file 
-  ```
-  VITE_MAPBOX_TOKEN=MAP BOX DEFAULT PUBLIC KEY
-  ```
+2. **Activate Virtual Environment**:
+   * **Windows (PowerShell)**:
+     ```powershell
+     .\venv\Scripts\Activate.ps1
+     ```
+   * **Linux / macOS**:
+     ```bash
+     source venv/bin/activate
+     ```
 
-### 4 API ENDPOINTS OF BACKEND 
- Hosted on Render - https://darukaa-earth-backend.onrender.com/docs
+3. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure Environment Variables (`Backend/.env`)**:
+   Create a `.env` file inside the `Backend` directory:
+   ```env
+   PORT=8000
+   DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/darukaa_earth
+   ```
+
+5. **Start Backend Server**:
+   ```bash
+   uvicorn main:app --reload
+   ```
+   * The server runs locally at: `http://localhost:8000`
+   * Swagger Interactive API Docs available at: `http://localhost:8000/docs`
+
+---
+
+### 3. Frontend Environment Setup
+
+1. **Navigate to Frontend directory**:
+   ```bash
+   cd ../Frontend
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment Variables (`Frontend/.env`)**:
+   Create a `.env` file inside the `Frontend` directory:
+   ```env
+   VITE_API_BASE_URL=http://localhost:8000
+   VITE_MAPBOX_TOKEN=your_mapbox_access_token_here
+   ```
+
+4. **Start Development Server**:
+   ```bash
+   npm run dev
+   ```
+   * Open browser at: `http://localhost:5173`
+
+---
+
+## 🌐 Live Deployment Links
+
+* **Live Frontend**: [https://darukaa-earth-assignment.vercel.app](https://darukaa-earth-assignment.vercel.app)
+* **Live API Backend**: [https://darukaa-earth-assignment.onrender.com](https://darukaa-earth-assignment.onrender.com)
+* **API Documentation**: [https://darukaa-earth-assignment.onrender.com/docs](https://darukaa-earth-assignment.onrender.com/docs)
