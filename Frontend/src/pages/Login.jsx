@@ -6,7 +6,7 @@ import InteractiveGlobe from '../components/dashboard/InteractiveGlobe';
 import BrandLogo from '../components/common/BrandLogo';
 
 const Login = () => {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://darukaa-earth-backend.onrender.com';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://darukaa-earth-assignment.onrender.com';
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();

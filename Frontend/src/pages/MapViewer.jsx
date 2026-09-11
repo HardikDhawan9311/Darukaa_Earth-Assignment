@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MapboxContainer from '../components/dashboard/MapboxContainer';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://darukaa-earth-backend.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://darukaa-earth-assignment.onrender.com';
 const DEFAULT_COORDS = [78.9629, 22.5937];
 
 function parseProject(project) {

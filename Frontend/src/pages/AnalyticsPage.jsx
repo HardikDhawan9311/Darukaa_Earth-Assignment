@@ -8,7 +8,7 @@ import { TrendingUp, TrendingDown, Trees, Activity, Globe, BarChart2, Download, 
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, Filler);
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://darukaa-earth-backend.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://darukaa-earth-assignment.onrender.com';
 
 const CHART_BASE = {
   responsive: true, maintainAspectRatio: false,
