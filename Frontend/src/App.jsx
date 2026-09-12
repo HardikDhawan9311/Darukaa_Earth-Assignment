@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Analytics } from '@vercel/analytics/react';
 
 import Login         from './pages/Login';
 import Register      from './pages/Register';
@@ -33,6 +34,7 @@ function App() {
         {/* Legacy redirect for direct /admin/dashboard links */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
+      <Analytics />
     </Router>
   );
 }

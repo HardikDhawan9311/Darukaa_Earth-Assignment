@@ -82,6 +82,7 @@ const AnalyticsStream = ({
       </div>
       <Trees size={14} color="var(--color-green)" strokeWidth={1.5} />
     </div>
+    </div>
   );
 };
 
